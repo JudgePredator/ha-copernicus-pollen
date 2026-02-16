@@ -19,12 +19,23 @@
     },
     "error": {
       "invalid_latitude": "Latitude must be between -90 and 90",
-      "invalid_longitude": "Longitude must be between -180 to 180",
+      "invalid_longitude": "Longitude must be between -180 and 180",
       "cannot_connect": "Unable to connect to Open-Meteo API. Check your internet connection.",
       "unknown": "Unexpected error occurred. Check logs for details."
     },
     "abort": {
       "already_configured": "This location is already configured. Use a different location or delete the existing one first."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configure Pollen Monitoring",
+        "description": "Update your location settings.\n\n**Integration created by JudgePredator**",
+        "data": {
+          "name": "Location Name"
+        }
+      }
     }
   }
 }
