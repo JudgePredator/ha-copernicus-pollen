@@ -50,7 +50,9 @@ class CopernicusPollenSensor(CoordinatorEntity, SensorEntity):
         self._entry = entry
         self._attr_has_entity_name = True
         self._attr_name = POLLEN_TYPES[pollen_type]
-        self._attr_unique_id = f"{entry.entry_id}_{pollen_type}"
+        # Use entry.unique_id (based on coordinates) instead of entry.entry_id
+        # This ensures stable entity IDs even if integration is deleted and re-added
+        self._attr_unique_id = f"{entry.unique_id}_{pollen_type}"
         self._attr_native_unit_of_measurement = "grains/m³"
         self._attr_state_class = SensorStateClass.MEASUREMENT
         self._attr_suggested_display_precision = 1
@@ -150,12 +152,13 @@ class CopernicusPollenSensor(CoordinatorEntity, SensorEntity):
     @property
     def device_info(self):
         """Return device information."""
+        # Use entry.unique_id for stable device identifier
         return {
-            "identifiers": {(DOMAIN, self._entry.entry_id)},
+            "identifiers": {(DOMAIN, self._entry.unique_id)},
             "name": f"Pollen Monitor {self._entry.data['name']}",
             "manufacturer": "Copernicus CAMS",
             "model": "European Air Quality Forecast",
-            "sw_version": "1.0.1",
+            "sw_version": "1.0.3",
             "configuration_url": "https://github.com/JudgePredator/ha-copernicus-pollen",
         }
 
@@ -169,7 +172,8 @@ class CopernicusPollenTotalSensor(CoordinatorEntity, SensorEntity):
         self._entry = entry
         self._attr_has_entity_name = True
         self._attr_name = "Total Pollen"
-        self._attr_unique_id = f"{entry.entry_id}_total"
+        # Use entry.unique_id for stable unique_id
+        self._attr_unique_id = f"{entry.unique_id}_total"
         self._attr_native_unit_of_measurement = "grains/m³"
         self._attr_state_class = SensorStateClass.MEASUREMENT
         self._attr_suggested_display_precision = 0
@@ -247,11 +251,12 @@ class CopernicusPollenTotalSensor(CoordinatorEntity, SensorEntity):
     @property
     def device_info(self):
         """Return device information."""
+        # Use entry.unique_id for stable device identifier
         return {
-            "identifiers": {(DOMAIN, self._entry.entry_id)},
+            "identifiers": {(DOMAIN, self._entry.unique_id)},
             "name": f"Pollen Monitor {self._entry.data['name']}",
             "manufacturer": "Copernicus CAMS",
             "model": "European Air Quality Forecast",
-            "sw_version": "1.0.1",
+            "sw_version": "1.0.3",
             "configuration_url": "https://github.com/JudgePredator/ha-copernicus-pollen",
         }
