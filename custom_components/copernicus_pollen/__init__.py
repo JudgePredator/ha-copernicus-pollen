@@ -63,7 +63,8 @@ class CopernicusPollenDataUpdateCoordinator(DataUpdateCoordinator):
         session = async_get_clientsession(self.hass)
         
         # Build API URL with all pollen types
-        pollen_params = ",".join([f"european_aqi_{p}" for p in POLLEN_TYPES.keys()])
+        # Note: pollen parameters don't use european_aqi_ prefix
+        pollen_params = ",".join(POLLEN_TYPES.keys())
         url = f"{API_URL}?latitude={self.latitude}&longitude={self.longitude}&hourly={pollen_params}&forecast_days=3"
         
         try:
@@ -80,9 +81,8 @@ class CopernicusPollenDataUpdateCoordinator(DataUpdateCoordinator):
                     hourly = data["hourly"]
                     
                     for pollen_type in POLLEN_TYPES.keys():
-                        key = f"european_aqi_{pollen_type}"
-                        if key in hourly and hourly[key]:
-                            values = hourly[key]
+                        if pollen_type in hourly and hourly[pollen_type]:
+                            values = hourly[pollen_type]
                             # Current value is the first non-null value
                             current = next((v for v in values if v is not None), 0)
                             processed_data[pollen_type] = {
