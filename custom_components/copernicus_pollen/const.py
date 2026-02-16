@@ -6,6 +6,7 @@ DOMAIN = "copernicus_pollen"
 API_URL = "https://air-quality-api.open-meteo.com/v1/air-quality"
 
 # Pollen types supported by Copernicus CAMS
+# Note: Use direct pollen parameter names, not european_aqi_ prefix
 POLLEN_TYPES = {
     "alder_pollen": "Alder",
     "birch_pollen": "Birch",
