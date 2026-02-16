@@ -8,6 +8,8 @@ A **Home Assistant custom integration** that brings real-time pollen forecasts f
 
 > **Perfect for allergy sufferers!** Track the pollen types that affect you most and get notifications before symptoms start.
 
+> **⚡ Latest (v1.0.3):** Fixed stable entity IDs - no more "orphaned entities" when re-adding integration with same coordinates!
+
 ---
 
 ## ✨ Features
@@ -44,6 +46,7 @@ A **Home Assistant custom integration** that brings real-time pollen forecasts f
 - ✅ **Works with Alexa** - Free voice announcements via Alexa Media Player
 - ✅ **HACS Compatible** - Easy installation and updates
 - ✅ **100% Free** - No API keys or subscriptions required
+- ✅ **Stable Entity IDs** - Re-add same location without orphaned entities (v1.0.3+)
 
 ### 🌍 European Coverage
 Works anywhere covered by Copernicus CAMS forecasts:
@@ -274,6 +277,19 @@ Monitor multiple cities:
 
 ## ❓ Troubleshooting
 
+### "Entity No Longer Provided" Warning
+
+**Fixed in v1.0.3!** If you see this after updating from older versions:
+
+1. **Delete old orphaned entities:**
+   - Settings → Devices & Services → Entities
+   - Search: `copernicus_pollen`
+   - Delete entities showing "no longer provided"
+
+2. **Restart Home Assistant**
+
+3. **Your current entities will remain stable** - they use coordinates-based unique IDs now
+
 ### No Sensors Appearing?
 
 1. **Check Integration Status**
@@ -291,25 +307,9 @@ Monitor multiple cities:
    - Search for "copernicus_pollen"
    - Look for any error messages
 
-### "Failed Setup" Error?
+### Detailed Troubleshooting
 
-- **Check coordinates** - Make sure they're valid (latitude -90 to 90, longitude -180 to 180)
-- **Check internet connection** - Integration needs to reach Open-Meteo API
-- **Restart Home Assistant** - Sometimes a fresh start helps
-- **Re-add integration** - Delete and add it again with correct coordinates
-
-### Sensors Not Updating?
-
-- Data updates **every hour** automatically
-- Check last_update attribute to see when data was fetched
-- Verify internet connectivity
-- Check Home Assistant logs for API errors
-
-### Wrong Location Data?
-
-- Delete the integration (Settings → Devices & Services → Configure → Delete)
-- Add it again with correct coordinates
-- Make sure you didn't swap latitude and longitude
+See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for comprehensive debugging guide.
 
 ---
 
@@ -360,6 +360,8 @@ Data comes from the **Copernicus Atmosphere Monitoring Service (CAMS)** European
 MIT License - Free to use, modify, and distribute. See [LICENSE](LICENSE) for details.
 
 ### Acknowledgments
+- **Created by:** [JudgePredator](https://github.com/JudgePredator)
+- **AI Assistant:** Perplexity AI (Claude Sonnet 4.5)
 - Home Assistant community for HACS and integration standards
 - Open-Meteo for providing free, no-authentication API access
 - Copernicus programme for open European Earth observation data
@@ -392,6 +394,33 @@ If this integration helps you manage allergies better:
 - 🗣️ **Share** with others who have allergies
 - 💬 **Post** about it on the Home Assistant community
 - ☕ **Sponsor** development (optional, link in GitHub profile)
+
+---
+
+## 📋 Changelog
+
+### v1.0.3 (Latest)
+- 🔧 **Fixed:** Stable entity unique IDs based on coordinates
+- ✅ No more "orphaned entities" when re-adding integration
+- ✅ Delete and re-add same location without issues
+
+### v1.0.2
+- 🐛 Fixed entity availability issues
+- ✨ Added proper credits in UI
+- 📚 Created comprehensive troubleshooting guide
+- 📝 Improved error logging
+
+### v1.0.1
+- ✨ Added Total Pollen sensor
+- 🎨 Dynamic icons based on danger levels
+- 💊 Health advice in attributes
+- 📊 Severity ratings
+
+### v1.0.0
+- 🎉 Initial release
+- 🌸 6 pollen type sensors
+- 📈 3-day forecasts
+- 🌍 European coverage
 
 ---
 
