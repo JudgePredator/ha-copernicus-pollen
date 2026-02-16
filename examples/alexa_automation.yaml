@@ -1,0 +1,220 @@
+# Alexa Automation Examples for Copernicus Pollen
+# 
+# REQUIREMENTS:
+# 1. Install "Alexa Media Player" from HACS (100% FREE - no subscriptions!)
+#    URL: https://github.com/alandtse/alexa_media_player
+# 2. Configure Alexa Media Player with your Amazon account
+# 3. Your Alexa devices will appear as media_player entities
+# 4. Replace 'media_player.YOUR_ECHO_DEVICE' with your actual device
+#
+# These automations are completely FREE - no Nabu Casa or AWS required!
+
+# ============================================
+# Automation 1: Morning Pollen Report
+# Announces pollen levels every morning
+# ============================================
+alias: Morning Pollen Report
+description: Daily pollen announcement at 7 AM
+trigger:
+  - platform: time
+    at: "07:00:00"
+condition: []
+action:
+  - service: notify.alexa_media
+    data:
+      target: media_player.YOUR_ECHO_DEVICE  # Change to your Echo device
+      data:
+        type: announce
+        method: speak
+      message: >
+        Good morning! Here's today's pollen forecast for Chania.
+        Olive pollen is {{ states('sensor.copernicus_pollen_chania_olive') }} grains per cubic meter.
+        Grass pollen is {{ states('sensor.copernicus_pollen_chania_grass') }} grains per cubic meter.
+        {% if states('sensor.copernicus_pollen_chania_olive')|float > 100 %}
+        High pollen levels expected today. Consider taking allergy medication.
+        {% else %}
+        Pollen levels are manageable today.
+        {% endif %}
+mode: single
+
+---
+
+# ============================================
+# Automation 2: High Pollen Alert
+# Triggers when olive pollen exceeds threshold
+# ============================================
+alias: High Olive Pollen Alert
+description: Alert when olive pollen is high
+trigger:
+  - platform: numeric_state
+    entity_id: sensor.copernicus_pollen_chania_olive
+    above: 100
+condition:
+  - condition: time
+    after: "06:00:00"
+    before: "22:00:00"  # Only alert during waking hours
+action:
+  - service: notify.alexa_media
+    data:
+      target: media_player.YOUR_ECHO_DEVICE
+      data:
+        type: announce
+        method: speak
+      message: >
+        Attention! Olive pollen levels are now high at 
+        {{ states('sensor.copernicus_pollen_chania_olive') }} grains per cubic meter.
+        You may want to close windows and limit outdoor activities.
+mode: single
+
+---
+
+# ============================================
+# Automation 3: Multi-Room Announcement
+# Announces to all Alexa devices in your home
+# ============================================
+alias: Pollen Alert All Rooms
+description: Announce high pollen to all Echo devices
+trigger:
+  - platform: numeric_state
+    entity_id: 
+      - sensor.copernicus_pollen_chania_olive
+      - sensor.copernicus_pollen_chania_grass
+    above: 150
+condition:
+  - condition: time
+    after: "08:00:00"
+    before: "20:00:00"
+action:
+  - service: notify.alexa_media
+    data:
+      target: 
+        - media_player.echo_living_room
+        - media_player.echo_bedroom
+        - media_player.echo_kitchen
+      data:
+        type: announce
+        method: speak
+      message: >
+        Pollen alert! Very high levels detected.
+        Current reading: {{ states('sensor.copernicus_pollen_chania_olive') }} grains per cubic meter.
+mode: single
+
+---
+
+# ============================================
+# Automation 4: Evening Forecast
+# Tomorrow's pollen forecast announcement
+# ============================================
+alias: Evening Pollen Forecast
+description: Announce tomorrow's pollen forecast at 8 PM
+trigger:
+  - platform: time
+    at: "20:00:00"
+condition: []
+action:
+  - service: notify.alexa_media
+    data:
+      target: media_player.YOUR_ECHO_DEVICE
+      data:
+        type: announce
+        method: speak
+      message: >
+        Tomorrow's pollen forecast:
+        Olive pollen expected average is 
+        {{ state_attr('sensor.copernicus_pollen_chania_olive', 'forecast_tomorrow_avg') }} 
+        grains per cubic meter, with a maximum of 
+        {{ state_attr('sensor.copernicus_pollen_chania_olive', 'forecast_tomorrow_max') }}.
+        {% if state_attr('sensor.copernicus_pollen_chania_olive', 'forecast_tomorrow_max')|float > 100 %}
+        High pollen expected tomorrow. Plan accordingly.
+        {% endif %}
+mode: single
+
+---
+
+# ============================================
+# Automation 5: Ask Alexa for Pollen (Script)
+# Create a voice-activated script
+# ============================================
+# First, create this script in scripts.yaml:
+
+pollen_status:
+  alias: Check Pollen Status
+  sequence:
+    - service: notify.alexa_media
+      data:
+        target: "{{ alexa_device }}"
+        data:
+          type: announce
+          method: speak
+        message: >
+          Current pollen levels in Chania:
+          Olive: {{ states('sensor.copernicus_pollen_chania_olive') }}.
+          Grass: {{ states('sensor.copernicus_pollen_chania_grass') }}.
+          Birch: {{ states('sensor.copernicus_pollen_chania_birch') }}.
+  
+# Then create an Alexa routine:
+# 1. Open Alexa app on phone
+# 2. More → Routines → Create Routine
+# 3. When: "Alexa, what's the pollen?"
+# 4. Add action → Smart Home → Control Device → Run Script → pollen_status
+# 5. From: The Echo device asking
+
+---
+
+# ============================================
+# Automation 6: Conditional Window Reminder
+# Reminds to close windows when pollen is high
+# ============================================
+alias: Close Windows Pollen Alert
+description: Remind to close windows when high pollen detected
+trigger:
+  - platform: numeric_state
+    entity_id: sensor.copernicus_pollen_chania_olive
+    above: 120
+condition:
+  # Only if window sensor shows open (optional - requires window sensor)
+  - condition: state
+    entity_id: binary_sensor.bedroom_window  # Replace with your window sensor
+    state: "on"
+action:
+  - service: notify.alexa_media
+    data:
+      target: media_player.echo_bedroom
+      data:
+        type: announce
+        method: speak
+      message: >
+        Reminder: Pollen levels are high at {{ states('sensor.copernicus_pollen_chania_olive') }}.
+        Consider closing the bedroom window to reduce allergen exposure.
+mode: single
+
+---
+
+# ============================================
+# Pro Tips:
+# ============================================
+# 
+# 1. Find your Echo device entity ID:
+#    - Go to Developer Tools → States
+#    - Search for "media_player.echo"
+#    - Copy the exact entity_id
+#
+# 2. Test announcements:
+#    - Go to Developer Tools → Services
+#    - Service: notify.alexa_media
+#    - Test your message before creating automation
+#
+# 3. Adjust thresholds:
+#    - Change "above: 100" values based on your sensitivity
+#    - Lower values = more sensitive alerts
+#
+# 4. Notification cooldown:
+#    - Add mode: single to prevent spam
+#    - Consider adding conditions to limit frequency
+#
+# 5. Voice customization:
+#    - Alexa supports SSML for better speech
+#    - Add pauses: <break time="500ms"/>
+#    - Emphasis: <emphasis level="strong">high pollen</emphasis>
+#
+# ============================================

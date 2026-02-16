@@ -1,0 +1,152 @@
+# Copernicus Pollen Dashboard Card Examples
+# Copy and paste these into your Lovelace dashboard
+# Adjust entity IDs to match your configured location name
+
+# ============================================
+# Example 1: Simple Entities Card
+# ============================================
+type: entities
+title: Pollen Levels - Chania
+entities:
+  - entity: sensor.copernicus_pollen_chania_olive
+    name: Olive
+    icon: mdi:tree
+  - entity: sensor.copernicus_pollen_chania_grass
+    name: Grass
+    icon: mdi:grass
+  - entity: sensor.copernicus_pollen_chania_birch
+    name: Birch
+    icon: mdi:tree-outline
+  - entity: sensor.copernicus_pollen_chania_ragweed
+    name: Ragweed
+    icon: mdi:flower
+  - entity: sensor.copernicus_pollen_chania_alder
+    name: Alder
+    icon: mdi:tree
+  - entity: sensor.copernicus_pollen_chania_mugwort
+    name: Mugwort
+    icon: mdi:flower-pollen
+
+---
+
+# ============================================
+# Example 2: Gauge Cards (Visual Meters)
+# ============================================
+type: horizontal-stack
+cards:
+  - type: gauge
+    entity: sensor.copernicus_pollen_chania_olive
+    name: Olive Pollen
+    min: 0
+    max: 200
+    severity:
+      green: 0
+      yellow: 30
+      red: 100
+  
+  - type: gauge
+    entity: sensor.copernicus_pollen_chania_grass
+    name: Grass Pollen
+    min: 0
+    max: 200
+    severity:
+      green: 0
+      yellow: 30
+      red: 100
+
+---
+
+# ============================================
+# Example 3: Markdown Card with Forecasts
+# ============================================
+type: markdown
+title: Pollen Forecast
+content: |
+  ## Today's Pollen Levels
+  
+  ### Olive: {{ states('sensor.copernicus_pollen_chania_olive') }} grains/m³
+  - Today Max: {{ state_attr('sensor.copernicus_pollen_chania_olive', 'forecast_today_max') }}
+  - Tomorrow Avg: {{ state_attr('sensor.copernicus_pollen_chania_olive', 'forecast_tomorrow_avg') }}
+  
+  ### Grass: {{ states('sensor.copernicus_pollen_chania_grass') }} grains/m³
+  - Today Max: {{ state_attr('sensor.copernicus_pollen_chania_grass', 'forecast_today_max') }}
+  - Tomorrow Avg: {{ state_attr('sensor.copernicus_pollen_chania_grass', 'forecast_tomorrow_avg') }}
+  
+  *Data from Copernicus CAMS*
+
+---
+
+# ============================================
+# Example 4: Conditional Warning Card
+# Shows only when pollen is high
+# ============================================
+type: conditional
+conditions:
+  - condition: numeric_state
+    entity: sensor.copernicus_pollen_chania_olive
+    above: 100
+card:
+  type: markdown
+  content: |
+    ⚠️ **High Pollen Alert!**
+    
+    Olive pollen is currently **{{ states('sensor.copernicus_pollen_chania_olive') }} grains/m³**
+    
+    Consider:
+    - Taking allergy medication
+    - Keeping windows closed
+    - Limiting outdoor activities
+
+---
+
+# ============================================
+# Example 5: History Graph
+# Shows pollen trends over time
+# ============================================
+type: history-graph
+title: Pollen History (24h)
+entities:
+  - entity: sensor.copernicus_pollen_chania_olive
+    name: Olive
+  - entity: sensor.copernicus_pollen_chania_grass
+    name: Grass
+  - entity: sensor.copernicus_pollen_chania_birch
+    name: Birch
+hours_to_show: 24
+refresh_interval: 0
+
+---
+
+# ============================================
+# Example 6: Complete Dashboard View
+# Combines multiple card types
+# ============================================
+type: vertical-stack
+cards:
+  # Header
+  - type: markdown
+    content: |
+      # 🌸 Pollen Monitoring
+      **Location:** {{ state_attr('sensor.copernicus_pollen_chania_olive', 'location') }}
+      
+      **Last Update:** {{ state_attr('sensor.copernicus_pollen_chania_olive', 'last_update') | as_timestamp | timestamp_custom('%H:%M, %d %b') }}
+  
+  # Current levels
+  - type: glance
+    title: Current Levels
+    entities:
+      - entity: sensor.copernicus_pollen_chania_olive
+        name: Olive
+      - entity: sensor.copernicus_pollen_chania_grass
+        name: Grass
+      - entity: sensor.copernicus_pollen_chania_birch
+        name: Birch
+      - entity: sensor.copernicus_pollen_chania_ragweed
+        name: Ragweed
+  
+  # History
+  - type: history-graph
+    entities:
+      - sensor.copernicus_pollen_chania_olive
+      - sensor.copernicus_pollen_chania_grass
+    hours_to_show: 24

@@ -1,0 +1,13 @@
+{
+  "domain": "copernicus_pollen",
+  "name": "Copernicus Pollen",
+  "codeowners": ["@JudgePredator"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/JudgePredator/ha-copernicus-pollen",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/JudgePredator/ha-copernicus-pollen/issues",
+  "requirements": [],
+  "version": "1.0.0"
+}
