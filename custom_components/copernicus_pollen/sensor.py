@@ -145,7 +145,7 @@ class CopernicusPollenSensor(CoordinatorEntity, SensorEntity):
             "forecast_tomorrow_max": daily_forecast.get("day_1_max"),
             "forecast_day_after_avg": daily_forecast.get("day_2_avg"),
             "forecast_day_after_max": daily_forecast.get("day_2_max"),
-            "last_update": self.coordinator.last_update_success_time,
+            "last_update": self.coordinator.last_update_success,
             "attribution": "Data provided by Open-Meteo (Copernicus CAMS)",
         }
 
@@ -158,7 +158,7 @@ class CopernicusPollenSensor(CoordinatorEntity, SensorEntity):
             "name": f"Pollen Monitor {self._entry.data['name']}",
             "manufacturer": "Copernicus CAMS",
             "model": "European Air Quality Forecast",
-            "sw_version": "1.0.3",
+            "sw_version": "1.0.4",
             "configuration_url": "https://github.com/JudgePredator/ha-copernicus-pollen",
         }
 
@@ -244,7 +244,7 @@ class CopernicusPollenTotalSensor(CoordinatorEntity, SensorEntity):
             "dominant_pollen": max(breakdown, key=breakdown.get) if breakdown else None,
             "latitude": self.coordinator.latitude,
             "longitude": self.coordinator.longitude,
-            "last_update": self.coordinator.last_update_success_time,
+            "last_update": self.coordinator.last_update_success,
             "attribution": "Data provided by Open-Meteo (Copernicus CAMS)",
         }
 
@@ -257,6 +257,6 @@ class CopernicusPollenTotalSensor(CoordinatorEntity, SensorEntity):
             "name": f"Pollen Monitor {self._entry.data['name']}",
             "manufacturer": "Copernicus CAMS",
             "model": "European Air Quality Forecast",
-            "sw_version": "1.0.3",
+            "sw_version": "1.0.4",
             "configuration_url": "https://github.com/JudgePredator/ha-copernicus-pollen",
         }
