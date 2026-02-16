@@ -8,7 +8,7 @@ A **Home Assistant custom integration** that brings real-time pollen forecasts f
 
 > **Perfect for allergy sufferers!** Track the pollen types that affect you most and get notifications before symptoms start.
 
-> **⚡ Latest (v1.0.3):** Fixed stable entity IDs - no more "orphaned entities" when re-adding integration with same coordinates!
+> **⚡ Latest (v1.0.4):** Fixed critical bug - entities now display properly with correct last_update attribute!
 
 ---
 
@@ -62,13 +62,13 @@ Works anywhere covered by Copernicus CAMS forecasts:
 After installation, you'll see **7 sensors** for your location:
 
 ```
-sensor.pollen_monitor_chania_olive          → 45.2 grains/m³ 🌳
-sensor.pollen_monitor_chania_grass          → 12.8 grains/m³ 🌾
-sensor.pollen_monitor_chania_birch          → 0.5 grains/m³  🌲
-sensor.pollen_monitor_chania_alder          → 2.1 grains/m³  🌲
-sensor.pollen_monitor_chania_ragweed        → 0.0 grains/m³  🌺
-sensor.pollen_monitor_chania_mugwort        → 1.3 grains/m³  🌿
-sensor.pollen_monitor_chania_total_pollen   → 62 grains/m³   ⚡
+sensor.pollen_monitor_athens_olive          → 45.2 grains/m³ 🌳
+sensor.pollen_monitor_athens_grass          → 12.8 grains/m³ 🌾
+sensor.pollen_monitor_athens_birch          → 0.5 grains/m³  🌲
+sensor.pollen_monitor_athens_alder          → 2.1 grains/m³  🌲
+sensor.pollen_monitor_athens_ragweed        → 0.0 grains/m³  🌺
+sensor.pollen_monitor_athens_mugwort        → 1.3 grains/m³  🌿
+sensor.pollen_monitor_athens_total_pollen   → 62 grains/m³   ⚡
 ```
 
 **Each sensor includes:**
@@ -128,9 +128,9 @@ sensor.pollen_monitor_chania_total_pollen   → 62 grains/m³   ⚡
 
    | Field | Example | Description |
    |-------|---------|-------------|
-   | **Location Name** | Chania | Display name for your sensors |
-   | **Latitude** | 35.5138 | Your city's latitude |
-   | **Longitude** | 24.0180 | Your city's longitude |
+   | **Location Name** | Athens | Display name for your sensors |
+   | **Latitude** | 37.9838 | Your city's latitude |
+   | **Longitude** | 23.7275 | Your city's longitude |
 
 5. Click **Submit**
 6. **Done!** Your sensors will appear immediately
@@ -141,7 +141,7 @@ sensor.pollen_monitor_chania_total_pollen   → 62 grains/m³   ⚡
 1. Open [Google Maps](https://maps.google.com)
 2. Right-click on your location
 3. Click the coordinates to copy them
-4. Example: `35.5138, 24.0180`
+4. Example: `37.9838, 23.7275`
 
 **Other Tools:**
 - [latlong.net](https://www.latlong.net/) - Search by city name
@@ -153,9 +153,8 @@ sensor.pollen_monitor_chania_total_pollen   → 62 grains/m³   ⚡
 |------|----------|----------|
 | **Athens** | 37.9838 | 23.7275 |
 | **Thessaloniki** | 40.6401 | 22.9444 |
-| **Chania (Crete)** | 35.5138 | 24.0180 |
-| **Heraklion (Crete)** | 35.3387 | 25.1442 |
 | **Patras** | 38.2466 | 21.7346 |
+| **Heraklion (Crete)** | 35.3387 | 25.1442 |
 | **Rhodes** | 36.4341 | 28.2176 |
 | **Corfu** | 39.6243 | 19.9217 |
 
@@ -187,15 +186,15 @@ Add to your Lovelace dashboard:
 type: entities
 title: 🌸 Pollen Levels Today
 entities:
-  - entity: sensor.pollen_monitor_chania_total_pollen
+  - entity: sensor.pollen_monitor_athens_total_pollen
     name: Total Pollen
     icon: mdi:flower-pollen
   - type: divider
-  - entity: sensor.pollen_monitor_chania_olive
+  - entity: sensor.pollen_monitor_athens_olive
     name: Olive
-  - entity: sensor.pollen_monitor_chania_grass
+  - entity: sensor.pollen_monitor_athens_grass
     name: Grass
-  - entity: sensor.pollen_monitor_chania_birch
+  - entity: sensor.pollen_monitor_athens_birch
     name: Birch
 ```
 
@@ -207,13 +206,13 @@ Get notified when it's dangerous to go outside:
 alias: High Pollen Alert
 trigger:
   - platform: numeric_state
-    entity_id: sensor.pollen_monitor_chania_total_pollen
+    entity_id: sensor.pollen_monitor_athens_total_pollen
     above: 100
 action:
   - service: notify.mobile_app_your_phone
     data:
       title: "⚠️ High Pollen Alert!"
-      message: "Total pollen is {{ states('sensor.pollen_monitor_chania_total_pollen') }} grains/m³. Stay indoors!"
+      message: "Total pollen is {{ states('sensor.pollen_monitor_athens_total_pollen') }} grains/m³. Stay indoors!"
 ```
 
 ### Morning Pollen Report (Alexa)
@@ -233,8 +232,8 @@ action:
         type: announce
       message: >
         Good morning! Today's total pollen level is 
-        {{ states('sensor.pollen_monitor_chania_total_pollen') }} grains per cubic meter.
-        {% set severity = state_attr('sensor.pollen_monitor_chania_total_pollen', 'severity') %}
+        {{ states('sensor.pollen_monitor_athens_total_pollen') }} grains per cubic meter.
+        {% set severity = state_attr('sensor.pollen_monitor_athens_total_pollen', 'severity') %}
         Pollen is {{ severity }}.
         {% if severity in ['High', 'Very High'] %}
         Consider taking your allergy medication before going outside.
@@ -253,16 +252,16 @@ Each sensor has forecast attributes:
 
 ```yaml
 # Check tomorrow's olive pollen forecast
-{{ state_attr('sensor.pollen_monitor_chania_olive', 'forecast_tomorrow_max') }}
+{{ state_attr('sensor.pollen_monitor_athens_olive', 'forecast_tomorrow_max') }}
 
 # Get health advice
-{{ state_attr('sensor.pollen_monitor_chania_olive', 'health_advice') }}
+{{ state_attr('sensor.pollen_monitor_athens_olive', 'health_advice') }}
 
 # See pollen breakdown from total sensor
-{{ state_attr('sensor.pollen_monitor_chania_total_pollen', 'pollen_breakdown') }}
+{{ state_attr('sensor.pollen_monitor_athens_total_pollen', 'pollen_breakdown') }}
 
 # Find dominant pollen type
-{{ state_attr('sensor.pollen_monitor_chania_total_pollen', 'dominant_pollen') }}
+{{ state_attr('sensor.pollen_monitor_athens_total_pollen', 'dominant_pollen') }}
 ```
 
 ### Multiple Locations
@@ -270,12 +269,20 @@ Each sensor has forecast attributes:
 Monitor multiple cities:
 1. Add the integration again (Settings → Devices & Services → Add Integration)
 2. Enter different coordinates
-3. Give it a different name (e.g., "Athens")
+3. Give it a different name (e.g., "Thessaloniki")
 4. You'll get separate sensors for each location
 
 ---
 
 ## ❓ Troubleshooting
+
+### "Entity Unavailable" Error
+
+**Fixed in v1.0.4!** If you upgraded from an older version and entities show unavailable:
+
+1. **Restart Home Assistant** after HACS update
+2. Wait 1-2 minutes for first data fetch
+3. Check logs for any errors: Settings → System → Logs → Search "copernicus_pollen"
 
 ### "Entity No Longer Provided" Warning
 
@@ -399,7 +406,12 @@ If this integration helps you manage allergies better:
 
 ## 📋 Changelog
 
-### v1.0.3 (Latest)
+### v1.0.4 (Latest)
+- 🐛 **Critical Fix:** Corrected `last_update` attribute error
+- ✅ Entities now display properly without AttributeError
+- ✅ Changed `last_update_success_time` to `last_update_success`
+
+### v1.0.3
 - 🔧 **Fixed:** Stable entity unique IDs based on coordinates
 - ✅ No more "orphaned entities" when re-adding integration
 - ✅ Delete and re-add same location without issues
